@@ -1,5 +1,7 @@
 from selenium import webdriver
 import time as tm 
+import requests
+import lxml
 from  bs4 import BeautifulSoup
 from pymongo import MongoClient
 
@@ -64,13 +66,17 @@ def gets(user_id,password):
     grade_keys = []
     grades = []
     points = []
+    all_points = []
     all_point = {}
+    point = {}
+    grade = {}
     
     #print("--------------------")
     time = point_trs[-1].getText().split("2")[1][1:].strip()
     #print(time)
     for idx,all_point_th in enumerate(all_point_ths):
         all_point[all_point_keys[idx]] = all_point_th.getText()
+    all_points.append(all_point)
     #print(all_point)
     
     for point_th in point_trs[0].find_all("th"):
@@ -99,15 +105,16 @@ def gets(user_id,password):
     #整理数据
     infos["统计时间"] = time
     infos["绩点"] = points
-    infos["总绩点"] = all_point
+    infos["总绩点"] = all_points
     infos["成绩"] = grades
     infos["user_id"] = user_id
     infos["password"] = password
     return infos
-#infos=gets("201706530","201706530")
+#infos=gets("201706508","201706508")
 #print(infos)
-'''    #插入到数据库
-    client = MongoClient("192.168.1.148",27017)
+'''
+    #插入到数据库
+    client = MongoClient("locahost",27017)
     #client = MongoClient("locahost",27017)
     db = client["mydb"]
     col1 = db["students"]
