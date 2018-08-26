@@ -28,59 +28,20 @@ def Gets(user_id, password):
         col.insert(info)
         return info
 
-def sends(user_id,password,email):
-    client = MongoClient("locahost",27017)#"192.168.1.148",27017)
-    db = client["mydb"]
-    col = db["mail"]
-    info = col.find({"user_id":user_id})
-    if info.count() >= 1:
-        if info[0]["password"] == password:
-            if info[0]["email"] == email:
-                return json.dumps(info[0],default=json_util.default)
-            else:
-                return False
-        else:
-             return False
-    elif info.count() == 0:
-        return False
 
-
-
-@app.route("/email",methods=["POST","GET"])
+@app.route("/email",methods=["GET","POST"])
 def sends():
     if request.method=="GET":
+        #user_id = request.form["user_id"]
+        #password = request.form["password"]
+        #email = request.form["email"]        
+        #client = MongoClient("locahost",27017)
+        #db = client["mydb"]
+        #email = request.getParameter("email");
         return render_template("send.html")
-        user_id = request.form["user_id"]#网页上获取的
-        #request语法:
-        #用以获取客户端在FORM表单中所输入的信息。（表单的method属性值需要为POST）
-        #stra=request.form["strUserld"]
-        password = request.form["password"]
-        email = request.form["email"]
-                
-        client = MongoClient("locahost",27017)
-        db = client["mydb"]
-        col = db["mail"]
-        sign = sends(user_id, password, email)
-        if sign == False:
-            infos = {}
-            infos["user_id"] = user_id
-            infos["password"] = password
-            infos["email"] = email
-            col.insert(infos)
-            content = "订阅成功"
-            return render_template("error.html",content=content)
-        elif sign == json.dumps(info[0],default=json_util.default):
-            content = "你已经订阅过了"
-            return render_template("error.html",content=content)
-    elif request.method=="POST":
-        content="请填写正确的信息"
-        return render_template("error.html",content=content)
-        
-    return render_template("index.html")
-    #if request.method=="GET":
-        #return render_template("send.html")
-    #else:
-        #return redirect(url_for('info1'))
+    else:
+        #email = request.form["email"]
+        return render_template("index.html")
 
 @app.route("/",methods=["POST","GET"])
 def index():
